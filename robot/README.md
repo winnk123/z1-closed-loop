@@ -57,6 +57,12 @@ export ULV_TUNNEL_KEY=$HOME/.ssh/ulv_relay_ed25519
 ./ops/start_z1_balance_stand.sh
 ```
 
+仅在现场确认悬空状态误报且机器人已安全落地时，才可显式绕过该检查：
+
+```bash
+./ops/start_z1_balance_stand.sh --ignore-hanged
+```
+
 紧急停止辅助命令：
 
 ```bash
