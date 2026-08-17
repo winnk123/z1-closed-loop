@@ -1,0 +1,71 @@
+# Zero-motion image-to-waypoint planning configuration for MagicBot Z1.
+camera:
+  serial: "REPLACE_WITH_REALSENSE_SERIAL"
+  # Verified on the chest D435: RGB 1280x720@15 + depth 640x480@15 aligns reliably.
+  color_width: 1280
+  color_height: 720
+  depth_width: 640
+  depth_height: 480
+  fps: 15
+  warmup_frames: 30
+  frame_timeout_ms: 5000
+  # The current chest D435 installation is upright. RGB and aligned depth must
+  # use the same orientation before vision/deprojection.
+  image_rotation_deg: 0
+  # Used by the rolling visual loop. The service owns the D435 and publishes
+  # synchronized compressed RGB-D plus the color-camera intrinsics.
+  color_topic: "/sensor/rgbd_image"
+  depth_topic: "/sensor/rgbd_depth_image"
+  camera_info_topic: "/sensor/rgbd_camera_info"
+  # Approximate optical-center height above the floor. This follows the original
+  # G1 baseline convention; it is not a calibrated camera-to-base transform.
+  camera_height_m: 1.00
+  camera_pitch_deg: 0.0
+  camera_roll_correction: 0.0
+
+relay:
+  # Reaches the GPU server through the robot-initiated SSH tunnel.
+  url: "http://127.0.0.1:18888"
+  # Remote multimodal inference is normally slower than the local iPlanner call.
+  timeout_s: 60.0
+  jpeg_quality: 90
+  # NavDP's own baseline letterboxes every image to 224x224 before inference.
+  # Do it on Z1 before the SSH tunnel to avoid sending unused high-resolution RGB-D.
+  navdp_upload_size: 224
+
+task:
+  instruction: "走到前面的黑色椅子并且停下。"
+  target_description: "前面的黑色椅子。"
+  progress_analysis: ""
+
+planning:
+  # "navdp" uses RGB-D candidate trajectory sampling; set "iplanner" to retain
+  # the original depth-only planner.
+  planner: "navdp"
+  # Original G1 baseline approximation: base_x=camera_z, base_y=-camera_x.
+  # Camera translation/pitch/yaw extrinsics are intentionally not inferred.
+  coordinate_mode: "g1_baseline_approx"
+  bbox_coordinate_space: "normalized_1000"
+  depth_patch_radius_px: 4
+  min_depth_m: 0.20
+  # Accept a farther visual landmark, but retain the separate 3 m local-plan clamp below.
+  max_depth_m: 6.00
+  max_goal_distance_m: 3.00
+
+# Rolling RGB-D -> NavDP execution defaults. The hardware runner remains
+# audit-only until its explicit --execute confirmation is provided.
+visual_closed_loop:
+  horizon_m: 0.30
+  max_plan_age_s: 1.00
+  # Exact G1 baseline semantics: truncate only the initial local path by
+  # SAFE_DISTANCE, then return to LA when within GOAL_TOLERANCE of that fixed
+  # truncated endpoint. Rolling replans retain that endpoint unchanged.
+  baseline_safe_distance_m: 0.50
+  baseline_goal_tolerance_m: 1.00
+  # Reject a rolling NavDP trajectory whose end is not close enough to the
+  # original safety-truncated odom endpoint; accepted ends are pinned exactly.
+  max_replan_terminal_error_m: 0.35
+  replan_interval_s: 0.40
+
+artifacts:
+  directory: captures/missions/lavira
