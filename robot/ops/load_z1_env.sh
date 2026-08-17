@@ -12,8 +12,10 @@ if [[ ! -r "$EAME_SETUP" ]]; then
 fi
 
 source "$EAME_SETUP"
-export ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-2}
-export ROS_LOCALHOST_ONLY=${ROS_LOCALHOST_ONLY:-1}
-export RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+# The Z1 ROS graph is local to the robot.  The vendor setup may export 0,
+# which makes this process join a different DDS network from the control stack.
+export ROS_DOMAIN_ID=${Z1_ROS_DOMAIN_ID:-2}
+export ROS_LOCALHOST_ONLY=${Z1_ROS_LOCALHOST_ONLY:-1}
+export RMW_IMPLEMENTATION=${Z1_RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
 export LD_LIBRARY_PATH="$Z1_SDK_ROOT/lib/$(uname -m):$MOTION_MSGS_PREFIX/lib:/opt/ros/humble/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export PYTHONPATH="$Z1_SDK_ROOT/lib/$(uname -m)${PYTHONPATH:+:$PYTHONPATH}"
