@@ -12,6 +12,7 @@ fi
 EAME_SETUP=${EAME_SETUP:-/opt/eame/setup.bash}
 Z1_SDK_ROOT=${Z1_SDK_ROOT:?export Z1_SDK_ROOT=/path/to/magicbot-z1_sdk-main}
 MOTION_MSGS_PREFIX=${MOTION_MSGS_PREFIX:-/opt/eame/motion_msgs}
+export EAME_SETUP Z1_SDK_ROOT MOTION_MSGS_PREFIX
 
 if [[ ! -r "$EAME_SETUP" ]]; then
   echo "missing Z1 setup: $EAME_SETUP" >&2
