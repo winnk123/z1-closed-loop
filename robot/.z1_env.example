@@ -1,0 +1,4 @@
+EAME_SETUP=/opt/eame/setup.bash
+Z1_SDK_ROOT=/absolute/path/to/magicbot-z1_sdk-main
+MOTION_MSGS_PREFIX=/opt/eame/motion_msgs
+Z1_LOCAL_IP=<robot-network-interface-ip>

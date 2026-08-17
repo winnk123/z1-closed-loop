@@ -14,9 +14,10 @@
 cd robot
 python3 -m pip install -r requirements.txt
 cp config/z1_planning.example.yaml config/z1_planning.yaml
+cp .z1_env.example .z1_env
 ```
 
-编辑 `config/z1_planning.yaml` 中的相机序列号、任务和规划参数。SDK 与 ROS 路径由环境变量配置：
+编辑 `config/z1_planning.yaml` 中的相机序列号、任务和规划参数，并在 `.z1_env` 中填写 SDK、ROS 路径和本机 IP。`.z1_env` 不会提交 Git。也可直接使用环境变量：
 
 ```bash
 export EAME_SETUP=/opt/eame/setup.bash
@@ -49,6 +50,12 @@ export ULV_TUNNEL_KEY=$HOME/.ssh/ulv_relay_ed25519
 ```
 
 可用第一个参数覆盖网卡 IP，也可用环境变量 `Z1_LOCAL_IP`。任务文本可通过 `Z1_INSTRUCTION` 和 `Z1_TARGET_DESCRIPTION` 覆盖。
+
+使机器人进入 balance stand：
+
+```bash
+./ops/start_z1_balance_stand.sh
+```
 
 紧急停止辅助命令：
 

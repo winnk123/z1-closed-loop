@@ -2,6 +2,13 @@
 # Shared environment for Z1 operational scripts.
 set -e
 
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+PROJECT_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
+Z1_LOCAL_ENV=${Z1_LOCAL_ENV:-$PROJECT_DIR/.z1_env}
+if [[ -r "$Z1_LOCAL_ENV" ]]; then
+  source "$Z1_LOCAL_ENV"
+fi
+
 EAME_SETUP=${EAME_SETUP:-/opt/eame/setup.bash}
 Z1_SDK_ROOT=${Z1_SDK_ROOT:?export Z1_SDK_ROOT=/path/to/magicbot-z1_sdk-main}
 MOTION_MSGS_PREFIX=${MOTION_MSGS_PREFIX:-/opt/eame/motion_msgs}

@@ -16,3 +16,4 @@ archive/
 *.pth
 *.engine
 robot/config/z1_planning.yaml
+robot/.z1_env
