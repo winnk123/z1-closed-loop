@@ -18,7 +18,17 @@ if [[ ! -r "$EAME_SETUP" ]]; then
   return 1 2>/dev/null || exit 1
 fi
 
+# The vendor setup references optional variables such as COLCON_TRACE before
+# assigning defaults, so it cannot be sourced while the caller has `set -u`.
+RESTORE_NOUNSET=false
+if [[ $- == *u* ]]; then
+  set +u
+  RESTORE_NOUNSET=true
+fi
 source "$EAME_SETUP"
+if [[ $RESTORE_NOUNSET == true ]]; then
+  set -u
+fi
 # The Z1 ROS graph is local to the robot.  The vendor setup may export 0,
 # which makes this process join a different DDS network from the control stack.
 export ROS_DOMAIN_ID=${Z1_ROS_DOMAIN_ID:-2}
